@@ -16,17 +16,17 @@ function getPackFileType() {
 }
 
 gulp.task("pack", gulp.task("build"), () => {
-	let name = packageDetails.name;
-	let version = packageDetails.version;
-	let filetype = getPackFileType();
-	let filename = `${name}-${version}-${args.vendor}${filetype}`;
+	const name = packageDetails.name;
+	const version = packageDetails.version;
+	const filetype = getPackFileType();
+	const filename = `${name}-${version}-${args.vendor}${filetype}`;
 	return gulp
 		.src(`dist/${args.vendor}/**/*`)
 		.pipe(zip(filename))
 		.pipe(gulp.dest("./packages"))
 		.on("end", () => {
-			let distStyled = colors.magenta(`dist/${args.vendor}`);
-			let filenameStyled = colors.magenta(`./packages/${filename}`);
+			const distStyled = colors.magenta(`dist/${args.vendor}`);
+			const filenameStyled = colors.magenta(`./packages/${filename}`);
 			log(`Packed ${distStyled} to ${filenameStyled}`);
 		});
 });

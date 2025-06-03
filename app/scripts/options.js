@@ -16,11 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	// 設定変更時の処理
-	Array.from(qualityRadioEls).forEach((el) => {
+	for (const el of qualityRadioEls) {
 		el.addEventListener("change", () => {
 			(isFirefox ? browser : chrome).storage.sync.set({
 				quality_v2: Number(qualityRadioEls.value),
 			});
 		});
-	});
+	}
 });

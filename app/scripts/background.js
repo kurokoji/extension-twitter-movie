@@ -7,13 +7,11 @@ const storedUrl = {};
 let qualitySetting = 2;
 if (isFirefox) {
 	browser.storage.sync.get("quality_v2").then((result) => {
-		qualitySetting =
-			result && result.quality_v2 ? Number(result.quality_v2) : 2;
+		qualitySetting = result?.quality_v2 ? Number(result.quality_v2) : 2;
 	});
 } else {
 	chrome.storage.sync.get("quality_v2", (result) => {
-		qualitySetting =
-			result && result.quality_v2 ? Number(result.quality_v2) : 2;
+		qualitySetting = result?.quality_v2 ? Number(result.quality_v2) : 2;
 	});
 }
 
@@ -34,9 +32,9 @@ if (isFirefox) {
 
 			// マスタープレイリストだったらM3U8の低い画質のやつを消す
 			if (/\/pl\/[^/]+.m3u8/.test(details.url)) {
-				let filter = browser.webRequest.filterResponseData(details.requestId);
-				let decoder = new TextDecoder("utf-8");
-				let encoder = new TextEncoder();
+				const filter = browser.webRequest.filterResponseData(details.requestId);
+				const decoder = new TextDecoder("utf-8");
+				const encoder = new TextEncoder();
 
 				filter.ondata = (event) => {
 					const body = decoder.decode(event.data, { stream: true });
@@ -73,10 +71,7 @@ if (isFirefox) {
 						case 2:
 							bodyLines = playlists[Math.max(...Object.keys(playlists))];
 							break;
-
-						// そこそこ画質の場合
-						case 3:
-						default:
+						default: {
 							const keys = Object.keys(playlists);
 							// 3個以上要素があれば一番高画質のものを除去してその中から一番いいものを選択する
 							if (keys.length > 2) {
@@ -84,9 +79,10 @@ if (isFirefox) {
 							}
 							bodyLines = playlists[Math.max(...Object.keys(playlists))];
 							break;
+						}
 					}
 
-					const str = headerLines.join("\n") + "\n" + bodyLines.join("\n");
+					const str = `${headerLines.join("\n")}\n${bodyLines.join("\n")}`;
 
 					filter.write(encoder.encode(str));
 					filter.disconnect();
@@ -106,7 +102,7 @@ if (isFirefox) {
 			}
 			const url = details.url;
 			if (/\/pl\/.+.m3u8/.test(url)) {
-				let id = url.match(/(ext_tw_video|amplify_video)\/([0-9]+)\//)[2];
+				const id = url.match(/(ext_tw_video|amplify_video)\/([0-9]+)\//)[2];
 
 				// マスタープレイリスト(plの後に画質のpathが入らない)だったらfetchして一番画質良さげなm3u8ファイルのパスを保存しておく
 				if (/\/pl\/[^/]+.m3u8/.test(url)) {
@@ -137,10 +133,7 @@ if (isFirefox) {
 										storedUrl[id] =
 											playlists[Math.max(...Object.keys(playlists))];
 										break;
-
-									// そこそこ画質の場合
-									case 3:
-									default:
+									default: {
 										const keys = Object.keys(playlists);
 										// 3個以上要素があれば一番高画質のものを除去してその中から一番いいものを選択する
 										if (keys.length > 2) {
@@ -149,6 +142,7 @@ if (isFirefox) {
 										storedUrl[id] =
 											playlists[Math.max(...Object.keys(playlists))];
 										break;
+									}
 								}
 							});
 					}
