@@ -1,3 +1,3 @@
-import gulp from 'gulp'
+import gulp from "gulp";
 
-gulp.task('default', gulp.task('build'));
+gulp.task("default", gulp.task("build"));
